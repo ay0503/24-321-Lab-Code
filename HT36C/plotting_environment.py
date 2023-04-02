@@ -27,8 +27,8 @@ def find_steady_state(data : list[float]) ->int:
     assert(len(data) > 10)
     init = (data[13] - data[3]) / 10
     for i in range(0, len(data) - 10):
-        slope = (data[i+10] - data[i]) / 10
-        if abs(slope) < abs(init) * 0.1:
+        slope = (data[i+5] - data[i]) / 5
+        if abs(slope) < abs(init) * 0.2:
             if i < int(0.7 * len(data)):
                 continue
             return i
@@ -103,37 +103,22 @@ ERROR_INT = 40
 ###############################################################################
 
 def exercise_a_calculations():
-    xls = pd.read_excel('./Data/Table 1, 2.xlsx')
-
-    t1_columns = ['d [mm]', 'Q [m^3/s]', 'T [C]', 'h1 [m]', 'h2 [m]', 
-                  'V_avg [m/s]', 'v [m^2/s]', 'Re_D', 'f_e', 'f_c', 'h_e [m]', 
-                  'h_c [m]']
-
-    for column_name in t1_columns:
-        get_average_save(xls, column_name)
-    print_values('1')
-    VALUES.clear()
-
-    t2_columns = ['d_err [mm]', 'Q_err [m^3/s]', 'T_err [C]', 'h1_err [m]', 'h2_err [m]', 
-                  'V_avg_err [m/s]', 'Re_D_err', 'f_e_err', 'f_c_err', 'h_e_err [m]', 
-                  'h_c_err [m]']
-
-    for column_name in t2_columns:
-        get_average_save(xls, column_name)
-    print_values('2')
+    xls = pd.read_excel('./C5_HT36C_A.xls')
+    # print(xls.columns)
+    result = [[[] for _ in range(10)] for _ in range(4)]
+    tube_no = xls['Number of Tubes']
+    for i in range(len(xls['Number of Tubes'])):
+        if np.isnan(tube_no[i]): continue
+        for j in range(10):
+            column = f'Temp T{j+1} [∞C]'
+            result[int(tube_no[i]) - 1][j].append(xls[column][i])
+    ss_result = [[] for _ in range(4)]
+    for i in range(4):
+        for j in range(10):
+            ss_result[i].append(find_steady_state(result[i][j]))
+    steady_states = [80, 30, 60, 60]
     
-def exercise_a_save_values():
-
-    xls = pd.read_excel('./Data/Table 1, 2.xlsx')
-
-    t1_columns = ['d [mm]', 'Q [m^3/s]', 'T [C]', 'h1 [m]', 'h2 [m]', 
-                  'V_avg [m/s]', 'v [m^2/s]', 'Re_D', 'f_e', 'f_c', 'h_e [m]', 
-                  'h_c [m]', 'd_err [mm]', 'Q_err [m^3/s]', 'T_err [C]', 
-                  'h1_err [m]', 'h2_err [m]', 'V_avg_err [m/s]', 'Re_D_err', 
-                  'f_e_err', 'f_c_err', 'h_e_err [m]', 'h_c_err [m]']
-
-    for column_name in t1_columns:
-        get_average_save(xls, column_name)
+    
 
 def figure_1_plot():
 
@@ -426,14 +411,8 @@ def table_2_calculations():
     print_values('2')
     
 def calculations():
-    # exercise_a_calculations()
+    exercise_a_calculations()
     # figure_1_plot()
-    # figure_2_plot()
-    figure_3_plot()
-    figure_4_plot()
-    # exercise_b_calculations()
-    # exercise_d_calculations()
-    # table_2_calculations()
     return
 
 calculations()
