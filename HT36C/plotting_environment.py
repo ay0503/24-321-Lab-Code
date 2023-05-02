@@ -149,17 +149,21 @@ def exercise_a_calculations():
     rho_c = 1/(1.0008*10**-3)
     m_dot_h = a(xls["V_hot [l/min]"])*rho_h/60000
     m_dot_c = a(xls["V_cold [l/min]"])*rho_c/60000
+    print(m_dot_c)
     T_c_i = a([12.8, 12.5, 12.6, 12.7])
     T_h_i = a(xls['T1 [°C]'])
     T_c_o = a(xls['T10 [°C]'])
     T_h_o = a([38.7, 41.1, 42.8, 44.8])
     q_c = -1*m_dot_c*c_p_c*(T_c_i - T_c_o)
     q_h = m_dot_h*c_p_h*(T_h_i - T_h_o)
+    print(q_h)
     epsilon = q_h/(np.minimum(m_dot_c*c_p_c, m_dot_h*c_p_h)*(T_h_i - T_c_i))
     delta_T1 = T_h_i - T_c_o
     delta_T2 = T_h_o - T_c_i
     lmtd = (delta_T1 - delta_T2)/np.log(delta_T1/delta_T2)
-    U_measured = q_h/(A_i*lmtd)
+    U_measured = q_c/(A_i*lmtd)
+    print(A_i)
+    print(lmtd)
     delta_Delta_T = np.sqrt(0.1**2*2)
     delta_m_dot = 0.01*rho_h/60000
     delta_Q = np.sqrt((delta_m_dot*c_p_h*(T_h_i - T_h_o))**2+
@@ -174,7 +178,7 @@ def exercise_a_calculations():
     Nu = 0.023*Re**0.8*Pr**0.3
     h_i = k*Nu/d_i
     d_o = 0.014
-    A_o = d_o*np.pi*L
+    A_o = d_o*np.pi*4
     Re = 4*m_dot_h/(np.pi*d_o*mu)
     Nu = 0.023*Re**0.8*Pr**0.3
     h_o = k*Nu/d_o
@@ -226,7 +230,7 @@ def exercise_b_calculations():
     T_h_o = a(xls['T5 [°C]'])
     q_c = -1*m_dot_c*c_p_c*(T_c_i - T_c_o)
     q_h = m_dot_h*c_p_h*(T_h_i - T_h_o)
-    epsilon = q_h/(np.minimum(m_dot_c*c_p_c, m_dot_h*c_p_h)*(T_h_i - T_c_i))
+    epsilon = m_dot_h*c_p_h*(T_h_i-T_h_o)/(np.minimum(m_dot_c*c_p_c, m_dot_h*c_p_h)*(T_h_i - T_c_i))
     delta_T1 = T_h_i - T_c_i
     delta_T2 = T_h_o - T_c_o
     lmtd = (delta_T1 - delta_T2)/np.log(delta_T1/delta_T2)
